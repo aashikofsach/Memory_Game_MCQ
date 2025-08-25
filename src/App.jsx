@@ -1,12 +1,9 @@
-import './App.css'
+import MemoryGame from "./components/MemoryGame"
 
 function App() {
 
-  return (
-   <div>
-    <h1>Memory Game </h1>
-
-   </div>
+  return ( <MemoryGame/>
+  
   )
 }
 
