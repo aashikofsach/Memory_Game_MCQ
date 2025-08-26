@@ -2,10 +2,11 @@ import React, { useState } from 'react'
 
 function MemoryGame() {
 
-    const [gridSize , setGridSize] = useState();
+    const [gridSize , setGridSize] = useState(4);
     const [cards , setCards] = useState([]);
 
     const [flipped , setFlipped] = useState([]);
+    const [solved , setSolved] = useState([])
     const [disabled , setDisabled] = useState([]);
 
     const [won, setWon] = useState();
@@ -19,6 +20,22 @@ function MemoryGame() {
         setGridSize(size)
     
     }
+
+    function InitializeGame()
+    {
+      const totalCards = gridSize*gridSize;
+      const pairCounts = Math.floor(totalCards/2);
+      const numbers = [...Array(pairCounts).keys()].map((_ , index) => index +1)
+      // console.log(numbers);
+      const shuffleCards = [...numbers, ...numbers].sort(()=> Math.random()-0.5).map((number , index)=> ({id: index , number}))
+      console.log(shuffleCards)
+      setCards(shuffleCards);
+      setFlipped([]);
+      setSolved([]);
+      setWon(false)
+    }
+
+    InitializeGame() ;
 
   return (
     <div className='flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4'>
