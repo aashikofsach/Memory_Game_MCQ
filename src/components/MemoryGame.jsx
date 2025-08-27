@@ -63,9 +63,9 @@ function MemoryGame() {
           <input id='gridSize' type="number" min={2} max={10} value={gridSize} onChange={handleGridChangeSize} className='border-2 border-gray-300 px-2 py-1 rounded-xl' />
         </div>
         {/* gameboard */}
-        <div className={`grid gap-2`} style={{gridTemplateColumns : `repeat(${gridSize} , 1fr)` }}>
+        <div className={`grid gap-2 mb-4 `} style={{gridTemplateColumns : `repeat(${gridSize} , 1fr)`, width : `${gridSize*100}px` }}>
           {
-            cards.map((card)=> <div key={card.id}>{card.number}</div>)
+            cards.map((card)=> <div className='aspect-square flex items-center justify-center text-xl font-bold cursor-pointer rounded-lg bg-gray-300 text-gray-400 transition-all duration-300' key={card.id}>{card.number}</div>)
           }
         </div>
     </div>
