@@ -90,6 +90,13 @@ function MemoryGame() {
     }
 
   }
+  useEffect(() => {
+   if(solved.length === cards.length && cards.length > 0)
+      setWon(true)
+  
+  
+  }, [solved])
+  
 
   const isFlipped = (id) => {
 
@@ -117,7 +124,7 @@ function MemoryGame() {
     {won &&  <div className='text-4xl font-bold text-green-500 animate-bounce mt-4'>You Won !</div>}
 
     {/* Reset and Play Again button */}
-    <button className='mt-4 px-4 py-2 bg-green-500 text-white rounded-2xl hover:bg-green-600 transition-colors duration-200'>
+    <button onClick={InitializeGame} className='mt-4 px-4 py-2 bg-green-500 text-white rounded-2xl hover:bg-green-600 transition-colors duration-200'>
       {won ? "Play Again" : "Reset"}
     </button>
     </div>
