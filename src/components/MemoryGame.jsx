@@ -9,7 +9,7 @@ function MemoryGame() {
   const [solved, setSolved] = useState([])
   const [disabled, setDisabled] = useState([]);
 
-  const [won, setWon] = useState();
+  const [won, setWon] = useState(true);
 
   function handleGridChangeSize(e) {
     // console.log("jai ")
@@ -110,9 +110,16 @@ function MemoryGame() {
       {/* gameboard */}
       <div className={`grid gap-2 mb-4 `} style={{ gridTemplateColumns: `repeat(${gridSize} , 1fr)`, width: `${gridSize * 100}px` }}>
         {
-          cards.map((card) => <div className={`aspect-square flex items-center justify-center text-xl font-bold cursor-pointer rounded-lg  text-gray-400 transition-all duration-300 ${isFlipped(card.id) ? isSolved(card.id) ? `bg-green-500 text-white`: `bg-blue-500 text-white` : `bg-gray-300 text-gray-400`}`} key={card.id} onClick={() => handleClick(card.id)}>{isFlipped(card.id) ? card.number : "?"}</div>)
+          cards?.map((card) => <div className={`aspect-square flex items-center justify-center text-xl font-bold cursor-pointer rounded-lg  text-gray-400 transition-all duration-300 ${isFlipped(card.id) ? isSolved(card.id) ? `bg-green-500 text-white`: `bg-blue-500 text-white` : `bg-gray-300 text-gray-400`}`} key={card.id} onClick={() => handleClick(card.id)}>{isFlipped(card.id) ? card.number : "?"}</div>)
         }
       </div>
+      {/* Victory Message */}
+    {won &&  <div className='text-4xl font-bold text-green-500 animate-bounce mt-4'>You Won !</div>}
+
+    {/* Reset and Play Again button */}
+    <button className='mt-4 px-4 py-2 bg-green-500 text-white rounded-2xl hover:bg-green-600 transition-colors duration-200'>
+      {won ? "Play Again" : "Reset"}
+    </button>
     </div>
   )
 }
