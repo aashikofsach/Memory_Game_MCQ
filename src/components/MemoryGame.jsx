@@ -7,9 +7,12 @@ function MemoryGame() {
 
   const [flipped, setFlipped] = useState([]);
   const [solved, setSolved] = useState([])
-  const [disabled, setDisabled] = useState([]);
+  const [movesCount, setMovesCount] = useState(0);
+  const [lost, setLost] = useState(false);
+  const [maxMoves, setMaxMoves] = useState(10)
 
-  const [won, setWon] = useState(true);
+
+  const [won, setWon] = useState(false);
 
   function handleGridChangeSize(e) {
     // console.log("jai ")
@@ -42,6 +45,9 @@ function MemoryGame() {
     setFlipped([]);
     setSolved([]);
     setWon(false)
+    setLost(false);
+    setMovesCount(0);
+
   }
 
 
@@ -52,19 +58,27 @@ function MemoryGame() {
 
   }, [gridSize]);
 
-  function checkMatch(secondId)
-  {
+  function checkMatch(secondId) {
     let [firstId] = flipped;
-    if(cards[firstId].number=== cards[secondId].number)
-    {
-      setSolved([...solved,firstId, secondId])
+
+    setMovesCount((prev) => {
+      const newMoves = prev + 1;
+
+      if (newMoves >= maxMoves && maxMoves > 0) {
+        setLost(true)
+      }
+
+      return newMoves;
+    })
+    if (cards[firstId].number === cards[secondId].number) {
+      setSolved([...solved, firstId, secondId])
       setFlipped([])
-      console.log("matched",solved)
+      console.log("matched", solved)
     }
-    else{
-      setTimeout(()=>{
+    else {
+      setTimeout(() => {
         setFlipped([])
-      },1000)
+      }, 1000)
     }
 
   }
@@ -91,12 +105,12 @@ function MemoryGame() {
 
   }
   useEffect(() => {
-   if(solved.length === cards.length && cards.length > 0)
+    if (solved.length === cards.length && cards.length > 0)
       setWon(true)
-  
-  
-  }, [solved])
-  
+
+
+  }, [solved, cards.length])
+
 
   const isFlipped = (id) => {
 
@@ -104,7 +118,7 @@ function MemoryGame() {
 
   }
 
-  const isSolved =(id) => solved.includes(id);
+  const isSolved = (id) => solved.includes(id);
 
   return (
     <div className='flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4'>
@@ -112,21 +126,42 @@ function MemoryGame() {
       {/* Input */}
       <div className='mb-4'>
         <label htmlFor="gridSize" className='mr-2'>Grid Size : (max 10)</label>
-        <input id='gridSize' type="number" min={2} max={10} value={gridSize} onChange={handleGridChangeSize} className='border-2 border-gray-300 px-2 py-1 rounded-xl' />
+        <input id='gridSize' type="number" min={2} max={10} value={gridSize} onChange={handleGridChangeSize} className='border-2 border-gray-300 px-2 py-1 rounded-xl mr-2' />
       </div>
+      <div className='mb-4'>
+        <label htmlFor="maxMoves" className='mr-2'>Max Moves (0 = unlimited): </label>
+        <input
+          id='maxMoves'
+          type="number"
+          min={0}
+          value={maxMoves}
+          onChange={(e) => setMaxMoves(parseInt(e.target.value) || 0)}
+          className='border-2 border-gray-300 px-2 py-1 rounded-xl'
+        />
+      </div>
+      <div className="mb-2 text-lg">
+  Moves: {movesCount} {maxMoves > 0 ? `/ ${maxMoves}` : ""}
+</div>
       {/* gameboard */}
       <div className={`grid gap-2 mb-4 `} style={{ gridTemplateColumns: `repeat(${gridSize} , 1fr)`, width: `${gridSize * 100}px` }}>
         {
-          cards?.map((card) => <div className={`aspect-square flex items-center justify-center text-xl font-bold cursor-pointer rounded-lg  text-gray-400 transition-all duration-300 ${isFlipped(card.id) ? isSolved(card.id) ? `bg-green-500 text-white`: `bg-blue-500 text-white` : `bg-gray-300 text-gray-400`}`} key={card.id} onClick={() => handleClick(card.id)}>{isFlipped(card.id) ? card.number : "?"}</div>)
+          cards?.map((card) => <div className={`aspect-square flex items-center justify-center text-xl font-bold cursor-pointer rounded-lg  text-gray-400 transition-all duration-300 ${isFlipped(card.id) ? isSolved(card.id) ? `bg-green-500 text-white` : `bg-blue-500 text-white` : `bg-gray-300 text-gray-400`}`} key={card.id} onClick={() => handleClick(card.id)}>{isFlipped(card.id) ? card.number : "?"}</div>)
         }
       </div>
       {/* Victory Message */}
-    {won &&  <div className='text-4xl font-bold text-green-500 animate-bounce mt-4'>You Won !</div>}
-
-    {/* Reset and Play Again button */}
-    <button onClick={InitializeGame} className='mt-4 px-4 py-2 bg-green-500 text-white rounded-2xl hover:bg-green-600 transition-colors duration-200'>
-      {won ? "Play Again" : "Reset"}
-    </button>
+      {won && !lost && (
+        <div className='text-4xl font-bold text-green-500 animate-bounce mt-4'>
+          You Won !
+        </div>
+      )}{lost && !won && (
+        <div className='text-4xl font-bold text-red-500 animate-bounce mt-4'>
+          You Lost !
+        </div>
+      )}
+      {/* Reset and Play Again button */}
+      <button onClick={InitializeGame} className='mt-4 px-4 py-2 bg-green-500 text-white rounded-2xl hover:bg-green-600 transition-colors duration-200'>
+        {won ? "Play Again" : "Reset"}
+      </button>
     </div>
   )
 }
